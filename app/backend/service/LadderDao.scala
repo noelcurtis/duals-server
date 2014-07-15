@@ -1,4 +1,4 @@
-package backend.services
+package backend.service
 
 import backend.models.{Ladder}
 import java.util.UUID

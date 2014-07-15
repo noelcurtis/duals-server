@@ -1,4 +1,4 @@
-package backend.services
+package backend.service
 
 import com.datastax.driver.core.{Row, ConsistencyLevel, Session}
 import backend.models.User
@@ -55,8 +55,8 @@ class UserDaoImpl(session: Session) extends UserDao {
       limit(1)
     val row = Some(session.execute(query).one())
     row match {
-      case None => None
       case Some(row) => Some(rowToUser(row))
+      case _ => None
     }
   }
 
@@ -66,8 +66,8 @@ class UserDaoImpl(session: Session) extends UserDao {
       limit(1)
     val row = Some(session.execute(query).one())
     row match {
-      case None => None
       case Some(row) => Some(rowToUser(row))
+      case _ => None
     }
   }
 

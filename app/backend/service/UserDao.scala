@@ -1,4 +1,4 @@
-package backend.services
+package backend.service
 
 import java.util.UUID
 import backend.models.User

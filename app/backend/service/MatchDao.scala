@@ -1,4 +1,4 @@
-package backend.services
+package backend.service
 
 import backend.models.{Match, User}
 import java.util.UUID

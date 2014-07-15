@@ -1,4 +1,4 @@
-package backend.services
+package backend.service
 
 import java.util.{Date, UUID}
 import com.datastax.driver.core.querybuilder.QueryBuilder
@@ -47,8 +47,8 @@ class MatchDaoImpl(session: Session) extends MatchDao {
     val query = QueryBuilder.select().from(tableName).where(QueryBuilder.eq(Match.ID_FIELD, id)).limit(1)
     val row = Some(session.execute(query).one())
     row match {
-      case None => None
       case Some(row) => Some(rowToMatch(row))
+      case _ => None
     }
   }
 
