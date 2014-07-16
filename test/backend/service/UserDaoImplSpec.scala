@@ -71,6 +71,6 @@ class UserDaoImplSpec extends Specification {
     }
   }
 
-  //step(SpecificationHelper.truncate(UserDaoImpl.tableName))
+  step(SpecificationHelper.truncate(UserDaoImpl.tableName))
 
 }
