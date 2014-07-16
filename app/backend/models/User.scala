@@ -20,6 +20,6 @@ object User {
   val ID_FIELD = "id"
   val EMAIL_FIELD = "email"
   val PASSWORD_FIELD = "password"
-  val FIRST_NAME_FIELD = "firstName"
-  val LAST_NAME_FIELD = "lastName"
+  val FIRST_NAME_FIELD = "first_name"
+  val LAST_NAME_FIELD = "last_name"
 }

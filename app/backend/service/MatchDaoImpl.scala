@@ -12,7 +12,7 @@ class MatchDaoImpl(session: Session) extends MatchDao {
 
   override def create(`match`: Match): Unit = {
     val query = QueryBuilder.insertInto(tableName).
-      value(Match.ID_FIELD, UUID.randomUUID()).
+      value(Match.ID_FIELD, `match`.id).
       value(Match.CREATED, new Date()).
       value(Match.FIRST_PARTICIPANT, `match`.firstParticipant).
       value(Match.SECOND_PARTICIPANT, `match`.secondParticipant).
