@@ -7,8 +7,6 @@ trait MatchDao {
 
   def create(`match`: Match)
   def delete(id:UUID)
-  def update(`match`: Match)
-  def findById(id: UUID) : Option[Match]
-
+  def findByUserId(id: UUID) : List[Match]
 
 }

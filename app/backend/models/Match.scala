@@ -1,7 +1,7 @@
 package backend.models
 
 import java.util.{Date, UUID}
-import backend.models.Result.Result
+import backend.models.MatchResult.Result
 import backend.models.MatchStatus.MatchStatus
 
 /**
@@ -15,24 +15,42 @@ import backend.models.MatchStatus.MatchStatus
  * @param status indicates the status of the Match (OPEN, ACCEPTED, COMPLETE)
  */
 case class Match (id: UUID, firstParticipant: UUID, secondParticipant: UUID,
-                  result: Result, created: Date, scheduled: Date, status: MatchStatus = MatchStatus.OPEN) {
+                  result: Result = MatchResult.None, created: Date = new Date(), scheduled: Date,
+                  status: MatchStatus = MatchStatus.OPEN) {
+
+  /**
+   * Creates a Match with first and second participant swapped
+   * @return
+   */
+  def swapFirstSecond() : Match = {
+    Match(id = this.id,
+      firstParticipant = this.secondParticipant,
+      secondParticipant = this.firstParticipant,
+      result = this.result,
+      created = this.created,
+      scheduled = this.scheduled,
+      status = MatchStatus.OPEN
+    )
+  }
+
 }
 
 object Match {
   val ID_FIELD = "id"
-  val FIRST_PARTICIPANT = "firstParticipant"
-  val SECOND_PARTICIPANT = "secondParticipant"
+  val FIRST_PARTICIPANT = "first_participant"
+  val SECOND_PARTICIPANT = "second_participant"
   val RESULT = "result"
   val CREATED = "created"
   val SCHEDULED = "scheduled"
   val STATUS = "status"
 }
 
-object Result extends Enumeration {
+object MatchResult extends Enumeration {
   type Result = Value
-  val FIRST_PARTICIPANT = Value(1)
-  val SECOND_PARTICOPANT = Value(2)
-  val DRAW = Value(3)
+  val None = Value(1)
+  val FIRST_PARTICIPANT = Value(2)
+  val SECOND_PARTICOPANT = Value(3)
+  val DRAW = Value(4)
 }
 
 object MatchStatus extends Enumeration {
