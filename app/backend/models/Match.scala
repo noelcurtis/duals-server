@@ -1,12 +1,14 @@
 package backend.models
 
 import java.util.{Date, UUID}
-import backend.models.MatchResult.Result
+import backend.models.MatchResult.MatchResult
 import backend.models.MatchStatus.MatchStatus
 
 /**
- * Match is used as an entry between 2 players, the unique identifier for a match is id
+ * Match is used as an entry between 2 players on a ladder, a match is
+ * uniquely identified by its Id and Ladder Id
  * @param id
+ * @param ladderId the id for the Ladder that this match is on
  * @param firstParticipant
  * @param secondParticipant
  * @param result
@@ -14,29 +16,41 @@ import backend.models.MatchStatus.MatchStatus
  * @param scheduled the date when this match is scheduled for
  * @param status indicates the status of the Match (OPEN, ACCEPTED, COMPLETE)
  */
-case class Match (id: UUID, firstParticipant: UUID, secondParticipant: UUID,
-                  result: Result = MatchResult.None, created: Date = new Date(), scheduled: Date,
+case class Match (id: UUID, ladderId: UUID, firstParticipant: UUID, secondParticipant: UUID,
+                  result: MatchResult = MatchResult.None, created: Date = new Date(), scheduled: Date,
                   status: MatchStatus = MatchStatus.OPEN) {
 
   /**
-   * Creates a Match with first and second participant swapped
+   * Creates a Match with first and second participant swapped,
+   * this is required because 2 entries are made for each match,
+   * the second is made by swapping the participants this is so that
+   * matches can be searched for both users
    * @return
    */
   def swapFirstSecond() : Match = {
-    Match(id = this.id,
+    Match(id = this.id, ladderId = this.ladderId,
       firstParticipant = this.secondParticipant,
       secondParticipant = this.firstParticipant,
-      result = this.result,
+      result = swapMatchResult(this.result),
       created = this.created,
       scheduled = this.scheduled,
       status = MatchStatus.OPEN
     )
   }
 
+  private def swapMatchResult(result: MatchResult) : MatchResult = {
+    result match {
+      case MatchResult.FIRST_PARTICIPANT => MatchResult.SECOND_PARTICIPANT
+      case MatchResult.SECOND_PARTICIPANT => MatchResult.FIRST_PARTICIPANT
+      case _ => result
+    }
+  }
+
 }
 
 object Match {
   val ID_FIELD = "id"
+  val LADDER_ID_FIELD = "ladder_id"
   val FIRST_PARTICIPANT = "first_participant"
   val SECOND_PARTICIPANT = "second_participant"
   val RESULT = "result"
@@ -46,11 +60,11 @@ object Match {
 }
 
 object MatchResult extends Enumeration {
-  type Result = Value
-  val None = Value(1)
-  val FIRST_PARTICIPANT = Value(2)
-  val SECOND_PARTICOPANT = Value(3)
-  val DRAW = Value(4)
+  type MatchResult = Value
+  val None = Value(1) // the match is undecided
+  val FIRST_PARTICIPANT = Value(2) // the first participant won
+  val SECOND_PARTICIPANT = Value(3) // the second participant won
+  val DRAW = Value(4) // the match is a draw
 }
 
 object MatchStatus extends Enumeration {

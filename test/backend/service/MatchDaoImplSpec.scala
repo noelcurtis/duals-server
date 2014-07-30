@@ -1,5 +1,7 @@
 package backend.service
 
+import java.util.UUID
+
 import backend.models.{MatchStatus, MatchResult}
 import org.junit.runner._
 import org.specs2.mutable._
@@ -36,15 +38,26 @@ class MatchDaoImplSpec extends Specification {
 
     step(SpecificationHelper.truncate(MatchDaoImpl.tableName))
 
-    "Can delete a match succesfully" in {
+    "Can delete a match successfully" in {
       val newMatch = SpecificationHelper.generateNewMatch()
       subject.create(newMatch)
-      subject.delete(newMatch.id)
+      subject.delete(newMatch.id, newMatch.ladderId)
       // check that the user is deleted
       subject.findByUserId(newMatch.firstParticipant).size shouldEqual(0)
     }
 
+    step(SpecificationHelper.truncate(MatchDaoImpl.tableName))
+
+    "Can get all matches for a user successfully" in {
+      val matches = SpecificationHelper.generateMatches()
+      subject.create(matches)
+
+      val foundUserMatches = subject.findByUserId(UUID.fromString(SpecificationHelper.testUserId))
+      // check all the matches are present
+      foundUserMatches.size shouldEqual(10)
+    }
+
   }
 
-  step(SpecificationHelper.truncate(MatchDaoImpl.tableName))
+//  step(SpecificationHelper.truncate(MatchDaoImpl.tableName))
 }
