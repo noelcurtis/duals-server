@@ -5,7 +5,7 @@ import java.util.{Date, UUID}
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.utils.UUIDs
 import com.datastax.driver.core.{Cluster, Session}
-import backend.models.{MatchResult, User, Match}
+import backend.models.{UserLadder, MatchResult, User, Match}
 
 import scala.collection.mutable.ListBuffer
 
@@ -63,5 +63,17 @@ object SpecificationHelper {
         scheduled = new Date())
     }
     matchList.toList
+  }
+
+  /**
+   * Generates a user-ladder
+   * @return
+   */
+  def generateUserLadder() : UserLadder = {
+    val userLadder = UserLadder(userId = UUID.fromString(testUserId),
+      ladderId = UUIDs.random(),
+      creator = true
+    )
+    userLadder
   }
 }

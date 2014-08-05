@@ -23,3 +23,10 @@ CREATE TABLE IF NOT EXISTS match (
 
 CREATE INDEX first_participant_index ON match (first_participant);
 CREATE INDEX second_participant_index ON match (second_participant);
+
+CREATE TABLE IF NOT EXISTS user_ladder (
+    user_id uuid,
+    ladder_id uuid,
+    creator boolean,
+    PRIMARY KEY (user_id, ladder_id)
+);
