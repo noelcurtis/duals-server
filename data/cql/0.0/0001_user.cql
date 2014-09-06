@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS user (
     password text,
     first_name text,
     last_name text,
+    auth_token text,
     PRIMARY KEY (email)
 );
 

@@ -1,8 +1,7 @@
-package backend.models
+package backend.model
 
 import java.util.{Date, UUID}
-
-import backend.service.SpecificationHelper
+import backend.SpecificationHelper
 import com.datastax.driver.core.utils.UUIDs
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification

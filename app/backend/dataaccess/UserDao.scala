@@ -1,7 +1,7 @@
-package backend.service
+package backend.dataaccess
 
 import java.util.UUID
-import backend.models.User
+import backend.model.User
 
 trait UserDao {
 
@@ -9,7 +9,7 @@ trait UserDao {
    * Use to create a User
    * @param user
    */
-  def create(user: User)
+  def create(user: User) : Option[User]
 
   /**
    * Use to delete a User by email

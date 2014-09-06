@@ -1,8 +1,9 @@
-package backend.service
+package backend.dataaccess
 
 import java.util.UUID
 
-import backend.models.{MatchStatus, MatchResult}
+import backend.SpecificationHelper
+import backend.model.{MatchStatus, MatchResult}
 import org.junit.runner._
 import org.specs2.mutable._
 import org.specs2.runner._
@@ -59,5 +60,5 @@ class MatchDaoImplSpec extends Specification {
 
   }
 
-//  step(SpecificationHelper.truncate(MatchDaoImpl.tableName))
+  step(SpecificationHelper.truncate(MatchDaoImpl.tableName))
 }

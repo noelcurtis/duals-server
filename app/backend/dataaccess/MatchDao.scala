@@ -1,6 +1,6 @@
-package backend.service
+package backend.dataaccess
 
-import backend.models.{Match, User}
+import backend.model.{Match, User}
 import java.util.UUID
 
 trait MatchDao {

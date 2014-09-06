@@ -1,15 +1,20 @@
-package backend.service
+package backend
 
 import java.util.{Date, UUID}
 
+import backend.model.{Match, User, UserLadder}
+import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.utils.UUIDs
-import com.datastax.driver.core.{Cluster, Session}
-import backend.models.{UserLadder, MatchResult, User, Match}
 
 import scala.collection.mutable.ListBuffer
 
+class SpecificationHelper {
+
+}
+
 object SpecificationHelper {
+
   val contactPoint = "127.0.0.1"
   val keySpace = "test_clash"
   val email = "foo@bar.com"
@@ -27,7 +32,7 @@ object SpecificationHelper {
     connection.execute(QueryBuilder.truncate(table))
   }
 
-  def generateUser(counter: Integer) : User = {
+  def generateUser(counter: Integer): User = {
     val user = User(id = UUID.randomUUID(),
       email = counter + email,
       password = counter + password,
@@ -40,11 +45,11 @@ object SpecificationHelper {
    * Generates one match associated with testUserId
    * @return
    */
-  def generateNewMatch() : Match = {
+  def generateNewMatch(): Match = {
     val `match` = Match(id = UUIDs.timeBased(),
       ladderId = UUIDs.random(),
       firstParticipant = UUID.fromString(testUserId),
-      secondParticipant =  UUID.fromString(secondTestUserId),
+      secondParticipant = UUID.fromString(secondTestUserId),
       scheduled = new Date())
     `match`
   }
@@ -53,13 +58,13 @@ object SpecificationHelper {
    * Generates 10 matches associated with testUserId
    * @return
    */
-  def generateMatches() : List[Match] = {
+  def generateMatches(): List[Match] = {
     var matchList = new ListBuffer[Match]
-    for(x <- 1 to 10 ){
+    for (x <- 1 to 10) {
       matchList += Match(id = UUIDs.timeBased(),
         ladderId = UUIDs.random(),
         firstParticipant = UUID.fromString(testUserId),
-        secondParticipant =  UUID.randomUUID(),
+        secondParticipant = UUID.randomUUID(),
         scheduled = new Date())
     }
     matchList.toList
@@ -69,11 +74,26 @@ object SpecificationHelper {
    * Generates a user-ladder
    * @return
    */
-  def generateUserLadder() : UserLadder = {
+  def generateUserLadder(): UserLadder = {
     val userLadder = UserLadder(userId = UUID.fromString(testUserId),
       ladderId = UUIDs.random(),
       creator = true
     )
     userLadder
+  }
+
+  /**
+   * Generates a List of UserLadder
+   * @return
+   */
+  def generateUserLadders(): List[UserLadder] = {
+    var userLadderList = new ListBuffer[UserLadder]
+    for (x <- 1 to 10) {
+      userLadderList += UserLadder(userId = UUID.fromString(testUserId),
+        ladderId = UUID.randomUUID(),
+        creator = false
+      );
+    }
+    userLadderList.toList
   }
 }

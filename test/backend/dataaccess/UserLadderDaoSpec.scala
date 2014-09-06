@@ -1,5 +1,6 @@
-package backend.service
+package backend.dataaccess
 
+import backend.SpecificationHelper
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
 import org.specs2.runner.JUnitRunner
@@ -26,7 +27,7 @@ class UserLadderDaoSpec extends Specification {
       }
     }
 
-    // create test for finding multiple ladders for a user
+    //TODO(ncurtis): create test for finding multiple ladders for a user
 
   }
 

@@ -1,8 +1,8 @@
-package backend.service
+package backend.dataaccess
 
 import java.util.UUID
 
-import backend.models.User
+import backend.model.User
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.{ConsistencyLevel, Row, Session}
 import org.slf4j.LoggerFactory
@@ -10,21 +10,28 @@ import org.slf4j.LoggerFactory
 class UserDaoImpl(session: Session) extends UserDao {
   val logger = LoggerFactory.getLogger(this.getClass.getSimpleName)
 
-  override def create(user: User) = {
+  override def create(user: User) : Option[User] = {
     val query = QueryBuilder.insertInto(UserDaoImpl.tableName).
       value(User.ID_FIELD, user.id).
       value(User.EMAIL_FIELD, user.email).
       value(User.PASSWORD_FIELD, user.password).
+      value(User.AUTH_TOKEN_FIELD, user.authToken).
       value(User.FIRST_NAME_FIELD, user.firstName.getOrElse(null)).
       value(User.LAST_NAME_FIELD, user.lastName.getOrElse(null)).ifNotExists()
     val resultSet = session.execute(query)
     resultSet.one().getBool(0) match {
-      case true => logger.info("Created user {}", user)
-      case _ => throw new RuntimeException(s"Error creating User $user with $query")
+      case true => {
+        logger.info("Created user {}", user)
+        Option(user)
+      }
+      case _ => {
+        logger.error(s"Error creating User $user with $query")
+        None
+      }
     }
   }
 
-  override def delete(email: String): Unit = {
+  override def delete(email: String) = {
     val query = QueryBuilder.delete().from(UserDaoImpl.tableName).
       where(QueryBuilder.eq(User.EMAIL_FIELD, email)).
       setConsistencyLevel(ConsistencyLevel.ONE)
@@ -68,7 +75,8 @@ class UserDaoImpl(session: Session) extends UserDao {
       email = row.getString(User.EMAIL_FIELD),
       password = row.getString(User.PASSWORD_FIELD),
       firstName = Option(row.getString(User.FIRST_NAME_FIELD)),
-      lastName = Option(row.getString(User.LAST_NAME_FIELD))
+      lastName = Option(row.getString(User.LAST_NAME_FIELD)),
+      authToken = row.getString(User.AUTH_TOKEN_FIELD)
     )
     user
   }

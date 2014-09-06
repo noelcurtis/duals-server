@@ -1,8 +1,8 @@
-package backend.service
+package backend.dataaccess
 
 import java.util.UUID
 
-import backend.models.UserLadder
+import backend.model.UserLadder
 
 trait UserLadderDao {
 

@@ -1,8 +1,8 @@
-package backend.models
+package backend.model
 
 import java.util.{Date, UUID}
-import backend.models.MatchResult.MatchResult
-import backend.models.MatchStatus.MatchStatus
+import backend.model.MatchResult.MatchResult
+import backend.model.MatchStatus.MatchStatus
 
 /**
  * Match is used as an entry between 2 players on a ladder, a match is

@@ -1,4 +1,4 @@
-package backend.models
+package backend.model
 
 import java.util.UUID
 
@@ -11,3 +11,5 @@ object UserLadder {
   var LADDER_ID_FIELD = "ladder_id"
   var CREATOR_FIELD = "creator"
 }
+
+// TODO(ncurtis): Update to create Ladder: with name, sport etc

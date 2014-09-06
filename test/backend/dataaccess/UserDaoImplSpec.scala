@@ -1,6 +1,7 @@
-package backend.service
+package backend.dataaccess
 
-import backend.models.User
+import backend.SpecificationHelper
+import backend.model.User
 import org.junit.runner._
 import org.specs2.mutable._
 import org.specs2.runner._
@@ -16,7 +17,9 @@ class UserDaoImplSpec extends Specification {
 
     "Create new user and find user successfully" in {
       val newUser = SpecificationHelper.generateUser(1)
-      subject.create(newUser)
+      val createdUser = subject.create(newUser)
+
+      createdUser.isDefined shouldEqual(true)
 
       val found = subject.findByEmail(newUser.email)
       found match {

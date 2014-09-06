@@ -1,8 +1,8 @@
-package backend.service
+package backend.dataaccess
 
 import java.util.{Date, UUID}
 
-import backend.models.{Match, MatchResult, MatchStatus}
+import backend.model.{Match, MatchResult, MatchStatus}
 import com.datastax.driver.core.querybuilder.{Insert, QueryBuilder}
 import com.datastax.driver.core.{BatchStatement, ConsistencyLevel, Row, Session}
 import org.slf4j.LoggerFactory
