@@ -2,8 +2,6 @@ package backend.model
 
 import java.util.UUID
 
-import com.datastax.driver.core.utils.UUIDs
-
 /**
  * Represents a User, unique id is email/id
  * @param id
@@ -16,7 +14,7 @@ import com.datastax.driver.core.utils.UUIDs
 case class User(id: UUID, email: String, password: String,
                     firstName: Option[String] = None,
                     lastName: Option[String] = None,
-                    authToken: String = UUIDs.random().toString) {
+                    authToken: Option[String] = None) {
 
 }
 

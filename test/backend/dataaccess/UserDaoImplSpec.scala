@@ -5,6 +5,7 @@ import backend.model.User
 import org.junit.runner._
 import org.specs2.mutable._
 import org.specs2.runner._
+import play.api.libs.json.Json
 
 
 @RunWith(classOf[JUnitRunner])
@@ -24,7 +25,9 @@ class UserDaoImplSpec extends Specification {
       val found = subject.findByEmail(newUser.email)
       found match {
         case Some(user) => {
-          user shouldEqual newUser
+          user.email shouldEqual newUser.email
+          user.password shouldEqual newUser.password
+          user.authToken.isDefined shouldEqual true
           success
         }
         case _ => failure("user not found by email")
@@ -33,7 +36,9 @@ class UserDaoImplSpec extends Specification {
       val foundId = subject.findById(newUser.id)
       foundId match {
         case Some(user) => {
-          user shouldEqual newUser
+          user.email shouldEqual newUser.email
+          user.password shouldEqual newUser.password
+          user.authToken.isDefined shouldEqual true
           success
         }
         case _ => failure("user not found by id")
