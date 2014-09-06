@@ -2,6 +2,8 @@ package backend.service
 
 import backend.SpecificationHelper
 import backend.dataaccess.UserDao
+import backend.model.User
+import com.datastax.driver.core.utils.UUIDs
 import org.junit.runner.RunWith
 import org.specs2.mock._
 import org.specs2.mutable.Specification
@@ -13,17 +15,16 @@ class UserServiceImplSpec extends Specification with Mockito {
   // mock the user dao
   val userDao = mock[UserDao]
   // create a test user
-  val testUser = SpecificationHelper.generateUser(1)
+  val testUser = User(id = UUIDs.random(), email = "foo@bar.com", password = "something")
   // mock a successful user creation
-  userDao.create(testUser) returns Option(testUser)
+  userDao.create(testUser.copy(password = UserServiceImpl.hashAndSaltPassword(testUser.password)))
+    .returns(Option(testUser.copy(password = UserServiceImpl.hashAndSaltPassword(testUser.password))))
   // create another test user
   val failTestUser = SpecificationHelper.generateUser(2)
   // mock a failed user creation
-  userDao.create(failTestUser) returns None
-
+  userDao.create(failTestUser.copy(password = UserServiceImpl.hashAndSaltPassword(failTestUser.password))) returns None
   // mock finding a user with email
-  userDao.findByEmail(testUser.email) returns Option(testUser)
-
+  userDao.findByEmail(testUser.email).returns(Option(testUser.copy(password = UserServiceImpl.hashAndSaltPassword(testUser.password))))
   // mock not finding a user with email
   userDao.findByEmail(failTestUser.email) returns None
 
@@ -35,7 +36,7 @@ class UserServiceImplSpec extends Specification with Mockito {
       val signedUp = subject.signUpUser(testUser)
 
       signedUp.isDefined.shouldNotEqual(false)
-      signedUp.get.shouldEqual(testUser)
+      signedUp.get.shouldEqual(testUser.copy(password = UserServiceImpl.hashAndSaltPassword(testUser.password)))
     }
 
     "Be able to recover from not signing up a user successfully" in {
@@ -49,7 +50,7 @@ class UserServiceImplSpec extends Specification with Mockito {
       val authedUser = subject.authenticateUser(testUser.email, testUser.password)
 
       authedUser.isDefined.shouldEqual(true)
-      authedUser.get.shouldEqual(testUser)
+      authedUser.get.shouldEqual(testUser.copy(password = UserServiceImpl.hashAndSaltPassword(testUser.password)))
     }
 
     "Be able to detect a user with email that does not exist" in {
