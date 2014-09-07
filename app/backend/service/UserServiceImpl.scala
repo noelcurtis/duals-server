@@ -48,5 +48,5 @@ object UserServiceImpl {
       .hash()
     hashCode.toString
   }
-  
+
 }
