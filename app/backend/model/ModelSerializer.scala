@@ -26,4 +26,9 @@ object ModelSerializer {
       (JsPath \ "authToken").readNullable[String]
   )(User.apply _)
 
+  implicit val authenticationParametersJsonReads: Reads[AuthenticationParameters] = (
+    (JsPath \ "email").read[String] and
+      (JsPath \ "password").read[String]
+  )(AuthenticationParameters.apply _)
+
 }

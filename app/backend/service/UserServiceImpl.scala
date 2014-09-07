@@ -11,6 +11,7 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
   val logger = LoggerFactory.getLogger(this.getClass.getSimpleName)
 
   override def signUpUser(user: User): Option[User] = {
+    //TODO: Check if the User already exists
     //TODO: Check that the email address is valid
     val saltyUser = user.copy(password = UserServiceImpl.hashAndSaltPassword(user.password))
     userDao.create(saltyUser)
