@@ -37,4 +37,11 @@ trait UserDao {
    */
   def findById(id: UUID) : Option[User]
 
+  /**
+   * Use to find a User by auth token
+   * @param authToken
+   * @return
+   */
+  def findByAuthToken(authToken: String): Option[User]
+
 }

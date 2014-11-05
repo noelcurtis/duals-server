@@ -1,8 +1,8 @@
 package controllers
 
 import backend.dataaccess.UserDaoImpl
-import backend.model.ModelSerializer.{authenticationParametersJsonReads, userAsJsonReads, userAsJsonWrites}
-import backend.model.{AuthenticationParameters, User}
+import backend.model.ModelSerializer._
+import backend.model.{UserCreateParameters, AuthenticationParameters, User}
 import backend.service.UserServiceImpl
 import com.datastax.driver.core.Cluster
 import play.api.libs.json._
@@ -24,7 +24,7 @@ object User extends Controller {
         BadRequest(getJsonError("Bad request format", 2))
       },
       authParameters => {
-        val checkedUser = userService.authenticateUser(authParameters.email, authParameters.password)
+        val checkedUser = userService.authenticateUser(authParameters)
         checkedUser match {
           // Successful authentication
           case Some(user) => Ok(Json.toJson(user))
@@ -36,7 +36,7 @@ object User extends Controller {
   }
 
   def signUp() = Action(parse.json) { request =>
-    val checkUser = request.body.validate[User]
+    val checkUser = request.body.validate[UserCreateParameters]
     checkUser.fold(
       errors => {
         // Badly formatted request parameters

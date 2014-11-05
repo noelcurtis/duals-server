@@ -5,10 +5,13 @@ CREATE TABLE IF NOT EXISTS user (
     first_name text,
     last_name text,
     auth_token text,
+    auth_token_update_time timestamp,
+    update_time timestamp,
     PRIMARY KEY (email)
 );
 
-CREATE INDEX id_index ON user (id);
+CREATE INDEX ON user (id);
+CREATE INDEX ON user (auth_token);
 
 CREATE TABLE IF NOT EXISTS match (
     id timeuuid,
@@ -22,8 +25,8 @@ CREATE TABLE IF NOT EXISTS match (
     PRIMARY KEY ((id, ladder_id), first_participant, second_participant)
 );
 
-CREATE INDEX first_participant_index ON match (first_participant);
-CREATE INDEX second_participant_index ON match (second_participant);
+CREATE INDEX ON match (first_participant);
+CREATE INDEX ON match (second_participant);
 
 CREATE TABLE IF NOT EXISTS user_ladder (
     user_id uuid,

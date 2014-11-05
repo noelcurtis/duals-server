@@ -1,36 +1,72 @@
 package backend.service
 
 import backend.dataaccess.UserDao
-import backend.model.User
+import backend.model.{AuthenticationParameters, User, UserCreateParameters}
+import com.datastax.driver.core.utils.UUIDs
 import com.google.common.base.Charsets
 import com.google.common.hash.Hashing
+import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 
 class UserServiceImpl(userDao: UserDao) extends UserService {
 
   val logger = LoggerFactory.getLogger(this.getClass.getSimpleName)
 
-  override def signUpUser(user: User): Option[User] = {
-    //TODO: Check if the User already exists
-    //TODO: Check that the email address is valid
-    val saltyUser = user.copy(password = UserServiceImpl.hashAndSaltPassword(user.password))
-    userDao.create(saltyUser)
+  override def signUpUser(user: UserCreateParameters): Option[User] = {
+    if (UserServiceImpl.isEmailValid(user.email)) {
+      // create a user with parameters and auth token
+      val saltyUser = User(id = UUIDs.random,
+        email = user.email,
+        password = UserServiceImpl.hashAndSaltPassword(user.password),
+        firstName = Option(user.firstName),
+        lastName = Option(user.lastName),
+        authToken = Option(UUIDs.random().toString),
+        authTokenUpdateTime = Option(new DateTime()))
+
+      userDao.create(saltyUser)
+    } else {
+      None
+    }
   }
 
-  override def authenticateUser(email: String, password: String): Option[User] = {
-    val foundUser = userDao.findByEmail(email)
+  override def authenticateUser(authParameters: AuthenticationParameters): Option[User] = {
+    val foundUser = userDao.findByEmail(authParameters.email)
     foundUser match {
       case Some(user) => {
-        if (user.password.equals(UserServiceImpl.hashAndSaltPassword(password))) {
-          foundUser
+        // authenticate the user
+        if (user.password.equals(UserServiceImpl.hashAndSaltPassword(authParameters.password))) {
+          // generate a new token for the user and update the user
+          val updatedUser = user.copy(authToken = Option(UUIDs.random().toString), authTokenUpdateTime = Option(new DateTime()))
+          userDao.update(updatedUser)
+
+          Option(updatedUser)
         } else {
           logger.debug(s"Authentication failed for user with id ${user.id}")
           None
         }
       }
       case _ => {
-        logger.debug(s"User not found for email ${email}")
+        logger.debug(s"User not found for email ${authParameters.email}")
         None
+      }
+    }
+  }
+
+  override def checkAuthTokenValidity(authToken: String): Boolean = {
+    val foundUser = userDao.findByAuthToken(authToken)
+    foundUser match {
+      case Some(user) => {
+        if (user.authTokenUpdateTime.isDefined &&
+          user.authTokenUpdateTime.get.isAfter(new DateTime().minusDays(UserServiceImpl.authTokenValidDays))) {
+          true
+        } else {
+          logger.debug(s"Auth token is not valid for user with id ${user.id}")
+          false
+        }
+      }
+      case _ => {
+        logger.debug(s"User not found for auth token ${authToken}")
+        false
       }
     }
   }
@@ -39,8 +75,10 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
 
 object UserServiceImpl {
 
+  val authTokenValidDays = 30;
   val hashFunction = Hashing.sha512()
   val salt = "something really complicated"
+  val emailRegex = """(\w+)@([\w\.]+)""".r
 
   def hashAndSaltPassword(password: String): String = {
     val hashCode = hashFunction.newHasher()
@@ -48,6 +86,10 @@ object UserServiceImpl {
       .putString(salt, Charsets.UTF_8)
       .hash()
     hashCode.toString
+  }
+
+  def isEmailValid(email: String): Boolean = {
+    return email.matches(emailRegex.toString())
   }
 
 }
