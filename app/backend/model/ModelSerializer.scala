@@ -15,8 +15,8 @@ object ModelSerializer {
       "firstName" -> user.firstName,
       "lastName" -> user.lastName,
       "authToken" -> user.authToken,
-      "authTokenUpdateTime" -> user.updateTime.get.getMillis,
-      "updateTime" -> user.updateTime.get.getMillis
+      "authTokenUpdateTime" -> user.updateTime.map(f => f.getMillis),
+      "updateTime" -> user.updateTime.map(f => f.getMillis)
     )
   }
 

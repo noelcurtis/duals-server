@@ -1,20 +1,23 @@
 package backend.dataaccess
 
-import java.util.UUID
+import java.util.{Date, UUID}
 
 import backend.model.User
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.utils.UUIDs
 import com.datastax.driver.core.{ConsistencyLevel, Row, Session}
 import org.joda.time.DateTime
-import java.util.Date
 import org.slf4j.LoggerFactory
 
 class UserDaoImpl(session: Session) extends UserDao {
   val logger = LoggerFactory.getLogger(this.getClass.getSimpleName)
 
   override def create(newUser: User): Option[User] = {
-    val user = newUser.copy(authToken = Option(UUIDs.random().toString))
+    val user = newUser.copy(
+      authToken = Option(UUIDs.random().toString),
+      authTokenUpdateTime = Option(new DateTime()),
+      updateTime = Option(new DateTime())
+    )
 
     val query = QueryBuilder.insertInto(UserDaoImpl.tableName).
       value(User.ID_FIELD, user.id).

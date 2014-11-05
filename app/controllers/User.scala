@@ -15,7 +15,10 @@ object User extends Controller {
   lazy val userDao = new UserDaoImpl(connection)
   lazy val userService = new UserServiceImpl(userDao)
 
-
+  /**
+   * Use to authenticate a user
+   * @return
+   */
   def authenticate() = Action(parse.json) { request =>
     val checkAuthParameters = request.body.validate[AuthenticationParameters]
     checkAuthParameters.fold(
@@ -35,6 +38,10 @@ object User extends Controller {
     )
   }
 
+  /**
+   * Use to Sign up a new user
+   * @return
+   */
   def signUp() = Action(parse.json) { request =>
     val checkUser = request.body.validate[UserCreateParameters]
     checkUser.fold(
@@ -48,7 +55,7 @@ object User extends Controller {
           // Successful sign up
           case Some(user) => Ok(Json.toJson(user))
           // Unsuccessful sign up
-          case _ => Unauthorized(getJsonError("Error creating account for user", 3))
+          case _ => Ok(getJsonError("Error creating account for user", 3))
         }
       }
     )
