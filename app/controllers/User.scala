@@ -1,12 +1,12 @@
 package controllers
 
 import backend.dataaccess.UserDaoImpl
-import backend.model.{User, AuthenticationParameters}
+import backend.model.ModelSerializer.{authenticationParametersJsonReads, userAsJsonReads, userAsJsonWrites}
+import backend.model.{AuthenticationParameters, User}
 import backend.service.UserServiceImpl
 import com.datastax.driver.core.Cluster
 import play.api.libs.json._
-import play.api.mvc.{BodyParser, Action, Controller}
-import backend.model.ModelSerializer.{authenticationParametersJsonReads, userAsJsonReads, userAsJsonWrites}
+import play.api.mvc.{Action, Controller}
 
 object User extends Controller {
 
@@ -29,7 +29,7 @@ object User extends Controller {
           // Successful authentication
           case Some(user) => Ok(Json.toJson(user))
           // Unsuccessful authentication
-          case _ => InternalServerError(getJsonError("Mismatched email or password", 1))
+          case _ => Unauthorized(getJsonError("Mismatched email or password", 1))
         }
       }
     )
@@ -48,13 +48,13 @@ object User extends Controller {
           // Successful sign up
           case Some(user) => Ok(Json.toJson(user))
           // Unsuccessful sign up
-          case _ => InternalServerError(getJsonError("Error creating account for user", 3))
+          case _ => Unauthorized(getJsonError("Error creating account for user", 3))
         }
       }
     )
   }
 
-  private def getJsonError(message: String, errorCode: Int) : JsValue = {
+  private def getJsonError(message: String, errorCode: Int): JsValue = {
     Json.obj("error" -> message, "errorCode" -> errorCode)
   }
 
