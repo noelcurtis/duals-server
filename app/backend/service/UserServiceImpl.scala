@@ -14,6 +14,7 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
 
   override def signUpUser(user: UserCreateParameters): Option[User] = {
     if (UserServiceImpl.isEmailValid(user.email)) {
+
       // create a user with parameters and auth token
       val saltyUser = User(id = UUIDs.random,
         email = user.email,
@@ -23,11 +24,7 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
         authToken = Option(UUIDs.random().toString),
         authTokenUpdateTime = Option(new DateTime()))
 
-      try {
-        userDao.create(saltyUser)
-      } catch {
-        case e: Exception => logger.error("Error creating user", e); None
-      }
+      userDao.create(saltyUser)
 
     } else {
       None
@@ -40,14 +37,10 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
       case Some(user) => {
         // authenticate the user
         if (user.password.equals(UserServiceImpl.hashAndSaltPassword(authParameters.password))) {
+
           // generate a new token for the user and update the user
           val updatedUser = user.copy(authToken = Option(UUIDs.random().toString), authTokenUpdateTime = Option(new DateTime()))
-
-          try {
-            userDao.update(updatedUser)
-          } catch {
-            case e: Exception => logger.error("Error updating user", e); None
-          }
+          userDao.update(updatedUser)
 
           Option(updatedUser)
         } else {

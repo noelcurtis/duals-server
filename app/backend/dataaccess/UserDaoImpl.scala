@@ -64,19 +64,19 @@ class UserDaoImpl(session: Session) extends UserDao {
   }
 
   override def findByEmail(email: String): Option[User] = {
-    if (!email.isEmpty) {
-      val query = QueryBuilder.select().from(UserDaoImpl.tableName).
-        where(QueryBuilder.eq(User.EMAIL_FIELD, email)).
-        limit(1).setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM)
-
-      val row = Option(session.execute(query).one())
-
-      row match {
-        case Some(row) => Option(rowToUser(row))
-        case _ => None
-      }
+    if (email.isEmpty) {
+      return None
     }
-    None
+    val query = QueryBuilder.select().from(UserDaoImpl.tableName).
+      where(QueryBuilder.eq(User.EMAIL_FIELD, email)).
+      limit(1).setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM)
+
+    val row = Option(session.execute(query).one())
+
+    row match {
+      case Some(row) => Option(rowToUser(row))
+      case _ => None
+    }
   }
 
   override def findById(id: UUID): Option[User] = {
