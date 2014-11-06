@@ -23,7 +23,12 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
         authToken = Option(UUIDs.random().toString),
         authTokenUpdateTime = Option(new DateTime()))
 
-      userDao.create(saltyUser)
+      try {
+        userDao.create(saltyUser)
+      } catch {
+        case e: Exception => logger.error("Error creating user", e); None
+      }
+
     } else {
       None
     }
@@ -37,16 +42,21 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
         if (user.password.equals(UserServiceImpl.hashAndSaltPassword(authParameters.password))) {
           // generate a new token for the user and update the user
           val updatedUser = user.copy(authToken = Option(UUIDs.random().toString), authTokenUpdateTime = Option(new DateTime()))
-          userDao.update(updatedUser)
+
+          try {
+            userDao.update(updatedUser)
+          } catch {
+            case e: Exception => logger.error("Error updating user", e); None
+          }
 
           Option(updatedUser)
         } else {
-          logger.debug(s"Authentication failed for user with id ${user.id}")
+          logger.info(s"Authentication failed for user with id ${user.id}")
           None
         }
       }
       case _ => {
-        logger.debug(s"User not found for email ${authParameters.email}")
+        logger.info(s"User not found for email ${authParameters.email}")
         None
       }
     }
@@ -60,12 +70,12 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
           user.authTokenUpdateTime.get.isAfter(new DateTime().minusDays(UserServiceImpl.authTokenValidDays))) {
           true
         } else {
-          logger.debug(s"Auth token is not valid for user with id ${user.id}")
+          logger.info(s"Auth token is not valid for user with id ${user.id}")
           false
         }
       }
       case _ => {
-        logger.debug(s"User not found for auth token ${authToken}")
+        logger.info(s"User not found for auth token ${authToken}")
         false
       }
     }
