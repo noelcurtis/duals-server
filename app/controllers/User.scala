@@ -2,7 +2,7 @@ package controllers
 
 import backend.dataaccess.UserDaoImpl
 import backend.model.ModelSerializer._
-import backend.model.{UserCreateParameters, AuthenticationParameters, User}
+import backend.model._
 import backend.service.UserServiceImpl
 import com.datastax.driver.core.Cluster
 import play.api.libs.json._
@@ -24,7 +24,7 @@ object User extends Controller {
     checkAuthParameters.fold(
       errors => {
         // Badly formatted request parameters
-        BadRequest(getJsonError("Bad request format", 2))
+        BadRequest(BadlyFormattedRequest().renderJson())
       },
       authParameters => {
         val checkedUser = userService.authenticateUser(authParameters)
@@ -32,7 +32,7 @@ object User extends Controller {
           // Successful authentication
           case Some(user) => Ok(Json.toJson(user))
           // Unsuccessful authentication
-          case _ => Unauthorized(getJsonError("Mismatched email or password", 1))
+          case _ => Unauthorized(UnauthorizedAccess().renderJson())
         }
       }
     )
@@ -47,7 +47,7 @@ object User extends Controller {
     checkUser.fold(
       errors => {
         // Badly formatted request parameters
-        BadRequest(getJsonError("Bad request format", 2))
+        BadRequest(BadlyFormattedRequest().renderJson())
       },
       userToSignUp => {
         val checkedUser = userService.signUpUser(userToSignUp)
@@ -55,14 +55,10 @@ object User extends Controller {
           // Successful sign up
           case Some(user) => Ok(Json.toJson(user))
           // Unsuccessful sign up
-          case _ => Ok(getJsonError("Error creating account for user", 3))
+          case _ => Ok(ErrorCreatingUserAccount().renderJson())
         }
       }
     )
-  }
-
-  private def getJsonError(message: String, errorCode: Int): JsValue = {
-    Json.obj("error" -> message, "errorCode" -> errorCode)
   }
 
 }

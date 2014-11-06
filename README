@@ -1,7 +1,2 @@
 # Clash: An app to make ladders for sports.
 
-# Views:
-*   Log in a User, Check that a User exists
-*   Get all the Ladders for a User
-*   Get the Results for a Ladder
-    * Get all matches on the Ladder and calculate User Results
