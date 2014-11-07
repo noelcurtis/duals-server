@@ -111,6 +111,12 @@ class UserDaoImplSpec extends Specification {
       foundUser.isDefined mustEqual(false)
     }
 
+    "Does not find a user with no email" in {
+      val foundUser = subject.findByEmail("")
+
+      foundUser.isDefined mustEqual(false)
+    }
+
 
   }
 
