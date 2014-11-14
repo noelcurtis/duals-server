@@ -29,18 +29,22 @@ object ModelSerializer {
       (JsPath \ "authToken").readNullable[String] and
       (JsPath \ "authTokenUpdateTime").readNullable[DateTime] and
       (JsPath \ "updateTime").readNullable[DateTime]
-  )(User.apply _)
+    )(User.apply _)
 
   implicit val authenticationParametersJsonReads: Reads[AuthenticationParameters] = (
     (JsPath \ "email").read[String] and
       (JsPath \ "password").read[String]
-  )(AuthenticationParameters.apply _)
+    )(AuthenticationParameters.apply _)
 
-  implicit val userCreateDetailsJsonReads : Reads[UserCreateParameters] = (
+  implicit val userCreateDetailsJsonReads: Reads[UserCreateParameters] = (
     (JsPath \ "email").read[String] and
       (JsPath \ "password").read[String] and
       (JsPath \ "firstName").read[String] and
       (JsPath \ "lastName").read[String]
-  )(UserCreateParameters.apply _)
+    )(UserCreateParameters.apply _)
 
+  implicit val ladderCreateParametersJsonReads: Reads[LadderCreateParameters] = (
+    (JsPath \ "name").read[String] and
+      (JsPath \ "activity").read[String]
+    )(LadderCreateParameters.apply _)
 }

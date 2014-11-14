@@ -2,49 +2,29 @@ package backend.dataaccess
 
 import java.util.UUID
 
-import backend.model.UserLadder
-import com.datastax.driver.core.{Row, Session}
-import com.datastax.driver.core.querybuilder.{Insert, QueryBuilder}
+import backend.model.{Ladder, UserLadder}
+import com.datastax.driver.core._
+import com.datastax.driver.core.querybuilder.{QueryBuilder}
+import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConverters._
 
 class UserLadderDaoImpl(session: Session) extends UserLadderDao {
   val logger = LoggerFactory.getLogger(this.getClass.getSimpleName)
 
-  private def createInsertQuery(userLadder: UserLadder): Insert = {
-    val query = QueryBuilder.insertInto(UserLadderDaoImpl.tableName).
-                value(UserLadder.USER_ID_FIELD, userLadder.userId).
-                value(UserLadder.LADDER_ID_FIELD, userLadder.ladderId).
-                value(UserLadder.CREATOR_FIELD, userLadder.creator).ifNotExists()
-    query
+  override def create(userLadder: UserLadder, ladder: Ladder) {
+    session.execute(createCombinedInsert(userLadder, ladder))
   }
 
-  /**
-   * Use to create an entry for UserLadder
-   * @param userLadder
-   */
-  override def create(userLadder: UserLadder) {
-    session.execute(createInsertQuery(userLadder))
-  }
-
-  /**
-   * Use to delete a UserLadder by userId and ladderId
-   * @param userId
-   * @param ladderId
-   */
   override def delete(userId: UUID, ladderId: UUID) {
-    val query = QueryBuilder.delete().from(UserLadderDaoImpl.tableName).
-                where(QueryBuilder.eq(UserLadder.USER_ID_FIELD, userId)).
-                and(QueryBuilder.eq(UserLadder.LADDER_ID_FIELD, ladderId))
+    val query = QueryBuilder.delete().from(UserLadderDaoImpl.USER_LADDER_TABLE_NAME).
+      where(QueryBuilder.eq(UserLadder.USER_ID_FIELD, userId)).
+      and(QueryBuilder.eq(UserLadder.LADDER_ID_FIELD, ladderId))
     session.execute(query)
   }
 
-  /**
-   * Use to find a UserLadder by userId and ladderId
-   * @param userId
-   * @param ladderId
-   */
-  override def find(userId: UUID, ladderId: UUID): Option[UserLadder] = {
-    val query = QueryBuilder.select().from(UserLadderDaoImpl.tableName).
+  override def findUserLadder(userId: UUID, ladderId: UUID): Option[UserLadder] = {
+    val query = QueryBuilder.select().from(UserLadderDaoImpl.USER_LADDER_TABLE_NAME).
       where(QueryBuilder.eq(UserLadder.USER_ID_FIELD, userId)).
       and(QueryBuilder.eq(UserLadder.LADDER_ID_FIELD, ladderId)).limit(1)
     val row = Option(session.execute(query).one())
@@ -52,6 +32,61 @@ class UserLadderDaoImpl(session: Session) extends UserLadderDao {
       case Some(row) => Option(rowToUserLadder(row))
       case _ => None
     }
+  }
+
+  override def findUserLadders(userId: UUID): List[UserLadder] = {
+    val query = QueryBuilder.select().from(UserLadderDaoImpl.USER_LADDER_TABLE_NAME)
+      .where(QueryBuilder.eq(UserLadder.USER_ID_FIELD, userId))
+    val rows = session.execute(query).all().asScala
+    val userLadders = rows.map(f => rowToUserLadder(f)).toList
+    userLadders
+  }
+
+  override def findLadder(ladderId: UUID): Option[Ladder] = {
+    val query = QueryBuilder.select().from(Ladder.TABLE_NAME)
+      .where(QueryBuilder.eq(Ladder.LADDER_ID_FIELD, ladderId))
+      .limit(1)
+    val row = Option(session.execute(query).one())
+    row match {
+      case Some(row) => Option(rowToLadder(row))
+      case _ => None
+    }
+  }
+
+  override def create(userLadder: UserLadder): Unit = ???
+
+  override def delete(userLadder: UserLadder): Unit = ???
+
+  override def findLadders(ladderIdList: List[UUID]): List[Ladder] = ???
+
+  // helper methods //
+
+  private def createUserLadderInsertQuery(userLadder: UserLadder): Statement = {
+    val query = QueryBuilder.insertInto(UserLadderDaoImpl.USER_LADDER_TABLE_NAME).
+      value(UserLadder.USER_ID_FIELD, userLadder.userId).
+      value(UserLadder.LADDER_ID_FIELD, userLadder.ladderId).
+      value(UserLadder.CREATOR_FIELD, userLadder.creator).
+      ifNotExists().
+      setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM)
+    query
+  }
+
+  private def createLadderInsertQuery(ladder: Ladder): Statement = {
+    val query = QueryBuilder.insertInto(UserLadderDaoImpl.LADDER_TABLE_NAME)
+      .value(Ladder.LADDER_ID_FIELD, ladder.ladderId)
+      .value(Ladder.NAME_FIELD, ladder.name)
+      .value(Ladder.ACTIVITY_FIELD, ladder.activity)
+      .value(Ladder.CREATE_TIME_FIELD, ladder.createTime.toDate)
+      .ifNotExists()
+      .setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM)
+    query
+  }
+
+  private def createCombinedInsert(userLadder: UserLadder, ladder: Ladder): Statement = {
+    val batch = new BatchStatement()
+      .add(createUserLadderInsertQuery(userLadder))
+      .add(createLadderInsertQuery(ladder))
+    batch
   }
 
   private def rowToUserLadder(row: Row) = {
@@ -63,8 +98,20 @@ class UserLadderDaoImpl(session: Session) extends UserLadderDao {
     userLadder
   }
 
+  private def rowToLadder(row: Row) = {
+    val ladder = Ladder(
+      ladderId = row.getUUID(Ladder.LADDER_ID_FIELD),
+      name = row.getString(Ladder.NAME_FIELD),
+      activity = row.getString(Ladder.ACTIVITY_FIELD),
+      createTime = new DateTime(row.getDate(Ladder.CREATE_TIME_FIELD))
+    )
+    ladder
+  }
+
+  // helper methods //
 }
 
 object UserLadderDaoImpl {
-  val tableName = "user_ladder"
+  val USER_LADDER_TABLE_NAME = "user_ladder"
+  val LADDER_TABLE_NAME = "ladder"
 }

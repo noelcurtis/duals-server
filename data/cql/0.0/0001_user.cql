@@ -34,3 +34,11 @@ CREATE TABLE IF NOT EXISTS user_ladder (
     creator boolean,
     PRIMARY KEY (user_id, ladder_id)
 );
+
+CREATE TABLE IF NOT EXISTS ladder (
+    ladder_id uuid,
+    name text,
+    activity text,
+    create_time timestamp,
+    PRIMARY KEY (ladder_id)
+);

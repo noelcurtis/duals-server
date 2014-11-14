@@ -12,4 +12,5 @@ object UserLadder {
   var CREATOR_FIELD = "creator"
 }
 
-// TODO(ncurtis): Update to create Ladder: with name, sport etc
+// TODO: UserLadder should also optionally hold Summary for the user on the ladder,
+// like number of scheduled games, position, etc etc
