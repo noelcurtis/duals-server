@@ -77,13 +77,13 @@ class UserServiceImplSpec extends Specification with Mockito {
     "Be able to detect valid auth token" in {
       val valid = subject.checkAuthTokenValidity(testUserWithAuthToken.get.authToken.get)
 
-      valid.shouldEqual(true)
+      valid.isDefined shouldEqual(true)
     }
 
     "Be able to detech invalid auth token" in {
       val valid = subject.checkAuthTokenValidity(testUserWithInvalidAuthToken.get.authToken.get)
 
-      valid.shouldEqual(false)
+      valid.isDefined shouldEqual(false)
     }
 
   }

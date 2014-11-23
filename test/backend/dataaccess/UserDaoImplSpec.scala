@@ -46,6 +46,18 @@ class UserDaoImplSpec extends Specification {
         }
         case _ => failure("user not found by id")
       }
+
+      val foundAuthToken = subject.findByAuthToken(createdUser.get.authToken.get)
+      foundAuthToken match {
+        case Some(user) => {
+          user.email shouldEqual newUser.email
+          user.password shouldEqual newUser.password
+          user.authToken.isDefined shouldEqual true
+          user.updateTime.isDefined shouldEqual true
+          success
+        }
+        case _ => failure("user not found by email")
+      }
     }
 
     "Delete a user successfully" in {
@@ -117,6 +129,11 @@ class UserDaoImplSpec extends Specification {
       foundUser.isDefined mustEqual(false)
     }
 
+    "Null auth token fails to find user" in {
+      val foundUser = subject.findByAuthToken(null)
+
+      foundUser.isDefined mustEqual(false)
+    }
 
   }
 

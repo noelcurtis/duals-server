@@ -55,21 +55,21 @@ class UserServiceImpl(userDao: UserDao) extends UserService {
     }
   }
 
-  override def checkAuthTokenValidity(authToken: String): Boolean = {
+  override def checkAuthTokenValidity(authToken: String): Option[User] = {
     val foundUser = userDao.findByAuthToken(authToken)
     foundUser match {
       case Some(user) => {
         if (user.authTokenUpdateTime.isDefined &&
           user.authTokenUpdateTime.get.isAfter(new DateTime().minusDays(UserServiceImpl.authTokenValidDays))) {
-          true
+          Option(user)
         } else {
           logger.info(s"Auth token is not valid for user with id ${user.id}")
-          false
+          None
         }
       }
       case _ => {
         logger.info(s"User not found for auth token ${authToken}")
-        false
+        None
       }
     }
   }

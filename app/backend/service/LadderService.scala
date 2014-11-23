@@ -2,13 +2,13 @@ package backend.service
 
 import java.util.UUID
 
-import backend.model.LadderCreateParameters
+import backend.model.{UserLadder, LadderCreateParameters}
 
 trait LadderService {
 
   def createLadderForUser(parameters: LadderCreateParameters, userId: UUID) : Option[UUID]
 
-  // should be able to get all the ladders for a user
+  def findLaddersForUser(userId: UUID) : List[UserLadder]
 
   // should be able to add user to a ladder
 

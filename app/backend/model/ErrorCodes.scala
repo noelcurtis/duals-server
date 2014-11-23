@@ -25,3 +25,8 @@ case class UnauthorizedAccess() extends ErrorCode {
   override def getMessage(): String = "Unauthorized access"
   override def getCode(): Int = 1
 }
+
+case class ExpiredToken() extends ErrorCode {
+  override def getMessage(): String = "Expired token, re-authenticate"
+  override def getCode(): Int = 4
+}

@@ -42,6 +42,10 @@ class LadderServiceImpl(userDao: UserDao, userLadderDao: UserLadderDao) extends 
 
   }
 
+  override def findLaddersForUser(userId: UUID): List[UserLadder] = {
+    userLadderDao.findUserLadders(userId)
+  }
+
 }
 
 object LadderServiceImpl {

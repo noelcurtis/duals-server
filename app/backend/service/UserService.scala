@@ -23,6 +23,6 @@ trait UserService {
    * @param authToken
    * @return
    */
-  def checkAuthTokenValidity(authToken: String): Boolean
+  def checkAuthTokenValidity(authToken: String): Option[User]
 
 }

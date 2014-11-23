@@ -104,8 +104,9 @@ class UserDaoImpl(session: Session) extends UserDao {
         case Some(row) => Option(rowToUser(row))
         case _ => None
       }
+    } else {
+      None
     }
-    None
   }
 
   private def rowToUser(row: Row): User = {

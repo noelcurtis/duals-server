@@ -4,7 +4,7 @@ import java.util.UUID
 
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import play.api.libs.json._
 
 object ModelSerializer {
 
@@ -47,4 +47,12 @@ object ModelSerializer {
     (JsPath \ "name").read[String] and
       (JsPath \ "activity").read[String]
     )(LadderCreateParameters.apply _)
+
+  implicit val ladderWrites = new Writes[UserLadder] {
+    def writes(userLadder: UserLadder) = Json.obj(
+      "ladderId" -> userLadder.ladderId,
+      "creator" -> userLadder.creator
+    )
+  }
+
 }
