@@ -30,3 +30,8 @@ case class ExpiredToken() extends ErrorCode {
   override def getMessage(): String = "Expired token, re-authenticate"
   override def getCode(): Int = 4
 }
+
+case class GenericError() extends ErrorCode {
+  override def getMessage(): String = "An Error occurred while trying to process your request, please try again"
+  override def getCode(): Int = 5
+}

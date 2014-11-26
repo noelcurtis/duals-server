@@ -1,7 +1,7 @@
 package controllers
 
 import backend.dataaccess.{UserLadderDaoImpl, UserDaoImpl}
-import backend.model.{LadderCreateParameters, BadlyFormattedRequest, UnauthorizedAccess}
+import backend.model.{GenericError, LadderCreateParameters, BadlyFormattedRequest, UnauthorizedAccess}
 import backend.service.{LadderServiceImpl, UserServiceImpl}
 import com.datastax.driver.core.Cluster
 import controllers.User._
@@ -36,8 +36,12 @@ object Ladder extends Controller {
               },
               params => {
                 // create the ladder
-                ladderService.createLadderForUser(params, user.id)
-                Ok
+                val ladderId = ladderService.createLadderForUser(params, user.id)
+                ladderId match {
+                  case Some(ladderId) => Ok(Json.obj("ladderId" -> ladderId.toString))
+                  case _ => Ok(Json.toJson(GenericError().renderJson()))
+                }
+
               }
             )
 

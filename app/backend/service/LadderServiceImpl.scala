@@ -26,12 +26,8 @@ class LadderServiceImpl(userDao: UserDao, userLadderDao: UserLadderDao) extends 
             name = parameters.name,
             createTime = new DateTime())
 
-          try {
-            userLadderDao.create(userLadder, ladder)
-            Option(ladderId)
-          } catch {
-            case _: Throwable => None // create failed in the dao
-          }
+          userLadderDao.create(userLadder, ladder)
+          Option(ladderId)
 
         } else {
           None // invalid ladder parameters
