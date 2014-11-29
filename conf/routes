@@ -3,15 +3,15 @@
 # ~~~~
 
 # Home page
-GET         /                          controllers.Application.index
+GET         /                          @controllers.Application.index
 
 # User
-POST        /users/authenticate        controllers.User.authenticate
-POST        /users                     controllers.User.signUp
+POST        /users/authenticate        @controllers.User.authenticate
+POST        /users                     @controllers.User.signUp
 
 #Ladder
-POST        /ladders                   controllers.Ladder.create
-GET         /ladders                   controllers.Ladder.laddersForUser
+POST        /ladders                   @controllers.Ladder.create
+GET         /ladders                   @controllers.Ladder.laddersForUser
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file              controllers.Assets.at(path="/public", file)

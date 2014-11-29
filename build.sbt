@@ -13,5 +13,6 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   ws,
-  "com.datastax.cassandra" % "cassandra-driver-core" % "2.0.3"
+  "com.datastax.cassandra" % "cassandra-driver-core" % "2.0.3",
+  "org.scaldi" %% "scaldi-play" % "0.4.1"
 )

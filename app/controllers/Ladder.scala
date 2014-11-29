@@ -1,23 +1,13 @@
 package controllers
 
-import backend.dataaccess.{UserLadderDaoImpl, UserDaoImpl}
-import backend.model.{GenericError, LadderCreateParameters, BadlyFormattedRequest, UnauthorizedAccess}
-import backend.service.{LadderServiceImpl, UserServiceImpl}
-import com.datastax.driver.core.Cluster
-import controllers.User._
+import backend.model.ModelSerializer._
+import backend.model.{BadlyFormattedRequest, GenericError, LadderCreateParameters, UnauthorizedAccess}
+import backend.service.{LadderService, UserService}
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
 import play.api.mvc.{Action, Controller}
-import backend.model.ModelSerializer._
 
-object Ladder extends Controller {
-
-  // TODO: lets get this injected with DI please
-  lazy val connection = Cluster.builder().addContactPoint("127.0.0.1").build().connect("clash")
-  lazy val userDao = new UserDaoImpl(connection)
-  lazy val userLadderDao = new UserLadderDaoImpl(connection)
-  lazy val userService = new UserServiceImpl(userDao)
-  lazy val ladderService = new LadderServiceImpl(userDao, userLadderDao)
+class Ladder(userService: UserService, ladderService: LadderService) extends Controller {
 
   def create = Action(parse.json) { request =>
     val authorization = request.headers.get(HeaderNames.AUTHORIZATION)

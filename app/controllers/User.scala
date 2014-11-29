@@ -1,19 +1,12 @@
 package controllers
 
-import backend.dataaccess.UserDaoImpl
 import backend.model.ModelSerializer._
 import backend.model._
-import backend.service.UserServiceImpl
-import com.datastax.driver.core.Cluster
+import backend.service.UserService
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 
-object User extends Controller {
-
-  // TODO: lets get this injected with DI please
-  lazy val connection = Cluster.builder().addContactPoint("127.0.0.1").build().connect("clash")
-  lazy val userDao = new UserDaoImpl(connection)
-  lazy val userService = new UserServiceImpl(userDao)
+class User(userService: UserService) extends Controller {
 
   /**
    * Use to authenticate a user
