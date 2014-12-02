@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS user_ladder (
     user_id uuid,
     ladder_id uuid,
     creator boolean,
+    scheduled_matches int,
+    wins int,
+    rank int,
     PRIMARY KEY (user_id, ladder_id)
 );
 

@@ -48,10 +48,13 @@ object ModelSerializer {
       (JsPath \ "activity").read[String]
     )(LadderCreateParameters.apply _)
 
-  implicit val ladderWrites = new Writes[UserLadder] {
+  implicit val userLadderWrites = new Writes[UserLadder] {
     def writes(userLadder: UserLadder) = Json.obj(
       "ladderId" -> userLadder.ladderId,
-      "creator" -> userLadder.creator
+      "creator" -> userLadder.creator,
+      "scheduledMatches" -> userLadder.scheduledMatches,
+      "wins" -> userLadder.wins,
+      "rank" -> userLadder.rank
     )
   }
 
