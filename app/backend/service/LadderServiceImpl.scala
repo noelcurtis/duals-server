@@ -20,11 +20,19 @@ class LadderServiceImpl(userDao: UserDao, userLadderDao: UserLadderDao) extends 
 
           // Create a user ladder and user
           val ladderId = UUIDs.random();
-          val userLadder = new UserLadder(userId = userId, ladderId = ladderId, creator = true)
-          val ladder = new Ladder(ladderId = ladderId,
+          val userLadder = new UserLadder(
+            userId = userId,
+            ladderId = ladderId,
+            name = parameters.name,
+            activity = parameters.activity,
+            creator = true
+          )
+          val ladder = new Ladder(
+            ladderId = ladderId,
             activity = parameters.activity,
             name = parameters.name,
-            createTime = new DateTime())
+            createTime = new DateTime()
+          )
 
           userLadderDao.create(userLadder, ladder)
           Option(ladderId)

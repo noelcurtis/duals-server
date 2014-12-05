@@ -41,6 +41,8 @@ class UserLadderDaoSpec extends Specification {
           userLadder.scheduledMatches shouldEqual newUserLadder._1.scheduledMatches
           userLadder.wins shouldEqual newUserLadder._1.wins
           userLadder.rank shouldEqual newUserLadder._1.rank
+          userLadder.name shouldEqual newUserLadder._2.name
+          userLadder.activity shouldEqual newUserLadder._2.activity
           success
         }
         case _ => failure("UserLadder not found by user-id and ladder-id")
@@ -62,6 +64,8 @@ class UserLadderDaoSpec extends Specification {
       userLadders(0).scheduledMatches shouldEqual newUserLadder._1.scheduledMatches
       userLadders(0).wins shouldEqual newUserLadder._1.wins
       userLadders(0).rank shouldEqual newUserLadder._1.rank
+      userLadders(0).name shouldEqual newUserLadder._2.name
+      userLadders(0).activity shouldEqual newUserLadder._2.activity
     }
 
     step(SpecificationHelper.truncate(UserLadderDaoImpl.USER_LADDER_TABLE_NAME))

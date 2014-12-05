@@ -51,6 +51,8 @@ object ModelSerializer {
   implicit val userLadderWrites = new Writes[UserLadder] {
     def writes(userLadder: UserLadder) = Json.obj(
       "ladderId" -> userLadder.ladderId,
+      "name" -> userLadder.name,
+      "activity" -> userLadder.activity,
       "creator" -> userLadder.creator,
       "scheduledMatches" -> userLadder.scheduledMatches,
       "wins" -> userLadder.wins,

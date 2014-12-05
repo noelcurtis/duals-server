@@ -4,6 +4,8 @@ import java.util.UUID
 
 case class UserLadder(userId: UUID,
                       ladderId: UUID,
+                      name: String,
+                      activity: String,
                       creator: Boolean = false,
                       scheduledMatches: Int = 0,
                       wins: Int = 0,
@@ -22,4 +24,6 @@ object UserLadder {
   var SCHEDULED_MATCHES_FIELD = "scheduled_matches"
   var WINS_FIELD = "wins"
   var RANK_FIELD = "rank"
+  var NAME_FIELD = "name"
+  var ACTIVITY_FIELD = "activity"
 }

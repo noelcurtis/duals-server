@@ -95,7 +95,9 @@ object SpecificationHelper {
   def generateUserLadder(): UserLadder = {
     val userLadder = UserLadder(userId = UUID.fromString(testUserId),
       ladderId = UUID.fromString(testLadderId),
-      creator = true
+      creator = true,
+      name = "A Test Ladder",
+      activity = "Table Tennis"
     )
     userLadder
   }
@@ -109,7 +111,9 @@ object SpecificationHelper {
     for (x <- 1 to 10) {
       userLadderList += UserLadder(userId = UUID.fromString(testUserId),
         ladderId = UUID.randomUUID(),
-        creator = false
+        creator = false,
+        name = "A Test Ladder",
+        activity = "Table Tennis"
       );
     }
     userLadderList.toList

@@ -31,6 +31,8 @@ CREATE INDEX ON match (second_participant);
 CREATE TABLE IF NOT EXISTS user_ladder (
     user_id uuid,
     ladder_id uuid,
+    name text,
+    activity text,
     creator boolean,
     scheduled_matches int,
     wins int,

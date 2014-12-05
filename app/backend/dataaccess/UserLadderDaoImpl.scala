@@ -65,6 +65,8 @@ class UserLadderDaoImpl(session: Session) extends UserLadderDao {
     val query = QueryBuilder.insertInto(UserLadderDaoImpl.USER_LADDER_TABLE_NAME).
       value(UserLadder.USER_ID_FIELD, userLadder.userId).
       value(UserLadder.LADDER_ID_FIELD, userLadder.ladderId).
+      value(UserLadder.NAME_FIELD, userLadder.name).
+      value(UserLadder.ACTIVITY_FIELD, userLadder.activity).
       value(UserLadder.CREATOR_FIELD, userLadder.creator).
       value(UserLadder.SCHEDULED_MATCHES_FIELD, userLadder.scheduledMatches).
       value(UserLadder.WINS_FIELD, userLadder.wins).
@@ -96,6 +98,8 @@ class UserLadderDaoImpl(session: Session) extends UserLadderDao {
     val userLadder = UserLadder(
       userId = row.getUUID(UserLadder.USER_ID_FIELD),
       ladderId = row.getUUID(UserLadder.LADDER_ID_FIELD),
+      name = row.getString(UserLadder.NAME_FIELD),
+      activity = row.getString(UserLadder.ACTIVITY_FIELD),
       creator = row.getBool(UserLadder.CREATOR_FIELD),
       scheduledMatches = row.getInt(UserLadder.SCHEDULED_MATCHES_FIELD),
       wins = row.getInt(UserLadder.WINS_FIELD),
