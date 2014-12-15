@@ -22,7 +22,7 @@ object SpecificationHelper {
   val password = "foobar"
   val testUserId = "5f2a5f9f-d7c3-4fa4-b0d1-c904a15a7781"
   val secondTestUserId = "e8abfa6d-31c3-4ddf-944f-844f75c1bbc1"
-  val testLadderId = "cf1feaea-1523-4f18-b42b-0f98a449a3d7"
+  val testLadderId = "2ed52561-833a-11e4-aa20-8db08896bdec"
 
   lazy val connection = Cluster.builder().addContactPoint(contactPoint).build().connect(keySpace)
 
@@ -110,7 +110,7 @@ object SpecificationHelper {
     var userLadderList = new ListBuffer[UserLadder]
     for (x <- 1 to 10) {
       userLadderList += UserLadder(userId = UUID.fromString(testUserId),
-        ladderId = UUID.randomUUID(),
+        ladderId = UUIDs.timeBased(),
         creator = false,
         name = "A Test Ladder",
         activity = "Table Tennis"

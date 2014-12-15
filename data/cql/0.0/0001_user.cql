@@ -30,7 +30,7 @@ CREATE INDEX ON match (second_participant);
 
 CREATE TABLE IF NOT EXISTS user_ladder (
     user_id uuid,
-    ladder_id uuid,
+    ladder_id timeuuid,
     name text,
     activity text,
     creator boolean,
@@ -38,10 +38,11 @@ CREATE TABLE IF NOT EXISTS user_ladder (
     wins int,
     rank int,
     PRIMARY KEY (user_id, ladder_id)
-);
+)
+WITH CLUSTERING ORDER BY (ladder_id DESC);
 
 CREATE TABLE IF NOT EXISTS ladder (
-    ladder_id uuid,
+    ladder_id timeuuid,
     name text,
     activity text,
     create_time timestamp,
