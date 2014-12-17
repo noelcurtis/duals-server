@@ -18,8 +18,9 @@ class LadderServiceImpl(userDao: UserDao, userLadderDao: UserLadderDao) extends 
         // validate the ladder create parameters
         if (LadderServiceImpl.validateLadderCreateParameters(parameters)) {
 
-          // Create a user ladder and user
+          // create a uuid for the ladder
           val ladderId = UUIDs.timeBased();
+          // Create a user ladder and user
           val userLadder = new UserLadder(
             userId = userId,
             ladderId = ladderId,

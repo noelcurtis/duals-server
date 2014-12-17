@@ -71,7 +71,6 @@ class UserLadderDaoImpl(session: Session) extends UserLadderDao {
       value(UserLadder.SCHEDULED_MATCHES_FIELD, userLadder.scheduledMatches).
       value(UserLadder.WINS_FIELD, userLadder.wins).
       value(UserLadder.RANK_FIELD, userLadder.rank).
-      ifNotExists().
       setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM)
     query
   }
@@ -82,7 +81,6 @@ class UserLadderDaoImpl(session: Session) extends UserLadderDao {
       .value(Ladder.NAME_FIELD, ladder.name)
       .value(Ladder.ACTIVITY_FIELD, ladder.activity)
       .value(Ladder.CREATE_TIME_FIELD, ladder.createTime.toDate)
-      .ifNotExists()
       .setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM)
     query
   }
